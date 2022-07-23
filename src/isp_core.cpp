@@ -97,6 +97,8 @@ void isp_raw_run(uint16_t *raw_buf, uint8_t *rgb_buf)
     isp_dpc(raw_buf);
     // black level correction
     isp_blc(raw_buf);
+    //anti-aliasing filter
+    isp_aaf(raw_buf);
     // awb gain
     isp_awb_gain(raw_buf);
     // cfa interpolation

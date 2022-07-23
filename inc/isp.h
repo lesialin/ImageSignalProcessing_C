@@ -71,6 +71,7 @@ EXPORT void isp_raw_run(uint16_t *raw_buf, uint8_t *rgb_buf);
 EXPORT void isp_load_config(string filename, isp_config_t *isp_config);
 EXPORT void isp_blc(uint16_t *raw_buf);
 EXPORT void isp_dpc(uint16_t *raw_buf);
+EXPORT void isp_aaf(uint16_t *raw_buf);
 EXPORT void isp_awb_gain(uint16_t *raw_buf);
 EXPORT void isp_ccm(uint16_t *rgb_buf);
 EXPORT void isp_cfa(uint16_t *raw_buf, uint16_t *rgb_buf);
