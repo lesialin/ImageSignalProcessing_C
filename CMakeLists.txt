@@ -20,5 +20,6 @@ src/isp_blc.cpp
 src/isp_dpc.cpp
 src/isp_ccm.cpp
 src/isp_awb.cpp
+src/isp_csc.cpp
 main.cpp)
 target_link_libraries(isp_pipeline ${OpenCV_LIBS})

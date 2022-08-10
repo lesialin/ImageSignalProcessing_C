@@ -68,11 +68,13 @@ typedef struct
 
 EXPORT void isp_init();
 EXPORT void isp_raw_run(uint16_t *raw_buf, uint8_t *rgb_buf);
+EXPORT void isp_yuv_run(uint8_t *rgb_buf, uint8_t *yuv_buf);
 EXPORT void isp_load_config(string filename, isp_config_t *isp_config);
-EXPORT void isp_blc(uint16_t *raw_buf);
-EXPORT void isp_dpc(uint16_t *raw_buf);
-EXPORT void isp_aaf(uint16_t *raw_buf);
-EXPORT void isp_awb_gain(uint16_t *raw_buf);
-EXPORT void isp_ccm(uint16_t *rgb_buf);
-EXPORT void isp_cfa(uint16_t *raw_buf, uint16_t *rgb_buf);
-EXPORT void isp_gac(uint16_t *rgb_buf, uint8_t *gamma_table, uint16_t table_size, uint8_t *ga_rgb_buf);
+void isp_blc(uint16_t *raw_buf);
+void isp_dpc(uint16_t *raw_buf);
+void isp_aaf(uint16_t *raw_buf);
+void isp_awb_gain(uint16_t *raw_buf);
+void isp_ccm(uint16_t *rgb_buf);
+void isp_cfa(uint16_t *raw_buf, uint16_t *rgb_buf);
+void isp_gac(uint16_t *rgb_buf, uint8_t *gamma_table, uint16_t table_size, uint8_t *ga_rgb_buf);
+void isp_csc(uint8_t *rgb_buf, uint8_t*yuv_buf);

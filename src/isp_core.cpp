@@ -120,3 +120,8 @@ void isp_raw_run(uint16_t *raw_buf, uint8_t *rgb_buf)
     free(rgb_10b_buf);
 }
 
+void isp_yuv_run(uint8_t *rgb_buf, uint8_t*yuv_buf){
+
+    isp_csc(rgb_buf, yuv_buf);
+
+}
