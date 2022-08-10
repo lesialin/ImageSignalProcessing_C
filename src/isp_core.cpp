@@ -1,9 +1,11 @@
 #include "isp.h"
 #include <cmath>
 #include <vector>
+
 using json = nlohmann::json;
 extern isp_config_t g_isp_config;
 uint8_t *gamma_table;
+uint16_t g_table_size;
 
 void isp_load_config(string filename, isp_config_t *isp_config)
 {
@@ -75,12 +77,14 @@ void isp_init()
    
 
     uint8_t *s_gamma_table;
-    uint16_t table_size;
-    table_size = in_max_value >> GAMMA_STEP;
-    gamma_table = (uint8_t *)malloc(sizeof(uint8_t) * table_size);
-    for (int i = 0; i < table_size; i++)
+    
+    g_table_size = in_max_value >> GAMMA_STEP;
+    
+    gamma_table = (uint8_t *)malloc(sizeof(uint8_t) * g_table_size);
+    for (int i = 0; i < g_table_size; i++)
     {
-        gamma_table[i] = (uint8_t)(pow((float)i * (1<<GAMMA_STEP) / in_max_value, gamma) * out_max_value);
+        gamma_table[i] = (uint8_t)(pow((float)(i * (1<<GAMMA_STEP)+ (1<<(GAMMA_STEP-1))) / in_max_value, gamma) * out_max_value);
+        //printf("gamma_table[%d] = %d\n",i, gamma_table[i]);
     }
 }
 
@@ -110,5 +114,9 @@ void isp_raw_run(uint16_t *raw_buf, uint8_t *rgb_buf)
     table_size = max_value >> GAMMA_STEP;
     isp_gac(rgb_10b_buf, gamma_table, table_size, rgb_buf);
 
+
+
+
     free(rgb_10b_buf);
 }
+
