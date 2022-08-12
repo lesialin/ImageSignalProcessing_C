@@ -78,3 +78,4 @@ void isp_ccm(uint16_t *rgb_buf);
 void isp_cfa(uint16_t *raw_buf, uint16_t *rgb_buf);
 void isp_gac(uint16_t *rgb_buf, uint8_t *gamma_table, uint16_t table_size, uint8_t *ga_rgb_buf);
 void isp_csc(uint8_t *rgb_buf, uint8_t*yuv_buf);
+void isp_nlm(uint8_t *image_in, uint8_t Ds, uint8_t ds, uint8_t h);
