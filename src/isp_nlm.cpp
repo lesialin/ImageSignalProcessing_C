@@ -2,7 +2,6 @@
 #include "isp.h"
 extern isp_config_t g_isp_config;
 
-
 void integrate_gray(uint8_t *image, uint16_t image_width, uint16_t image_height, uint32_t *image_out)
 {
 
@@ -30,32 +29,36 @@ void integrate_gray(uint8_t *image, uint16_t image_width, uint16_t image_height,
     }
 }
 
-void isp_nlm(uint8_t *image, uint8_t Ds, uint8_t ds, uint8_t h)
+void isp_nlm(uint8_t *src_image,uint8_t* dst_image)
 {
 
-    uint16_t image_height,image_width;
+    uint16_t image_height, image_width;
     uint16_t blk_x0, blk_x1, blk_y0, blk_y1;
     uint16_t sblk_x0, sblk_x1, sblk_y0, sblk_y1;
     uint32_t *integ_image;
     int64_t blk_sum, sblk_sum;
     uint8_t table_size;
     float *weight_table;
-    float distance, weight, d;
+    float distance, weight, k;
+    uint8_t Ds, ds, h;
     
+    Ds = g_isp_config.nlm_config.Ds;
+    ds = g_isp_config.nlm_config.ds;
+    h = g_isp_config.nlm_config.h;
 
     image_width = g_isp_config.image_width;
     image_height = g_isp_config.image_height;
 
-    
     table_size = 2 * (Ds - ds) + 1;
 
-    d = 1.0 / ((2 * ds + 1) * (2 * ds + 1));
+    //d = 1.0 / ((2 * ds + 1) * (2 * ds + 1));
+    k = -1.0 / ((2 * ds + 1) * (2 * ds + 1) * h * h);
 
     integ_image = (uint32_t *)malloc(image_width * image_height * sizeof(uint32_t));
 
     weight_table = (float *)malloc(table_size * table_size * sizeof(float));
 
-    integrate_gray(image, image_width, image_height, integ_image);
+    integrate_gray(src_image, image_width, image_height, integ_image);
 
     for (int i = Ds; i < image_height - Ds; i++)
     {
@@ -83,8 +86,14 @@ void isp_nlm(uint8_t *image, uint8_t Ds, uint8_t ds, uint8_t h)
                     sblk_sum = integ_image[sblk_y0 * image_width + sblk_x0] + integ_image[sblk_y1 * image_width + sblk_x1] -
                                integ_image[sblk_y0 * image_width + sblk_x1] - integ_image[sblk_y1 * image_width + sblk_x0];
 
-                    distance = d * pow((blk_sum - sblk_sum), 2);
-                    weight = pow(2.718, (-distance / (h * h)));
+                    // n = -distance/h^2
+                    // n = - (d*(blk_sum - sblk_sum)*(blk_sum - sblk_sum))/h^2
+                    // n = - (blk_sum - sblk_sum)*(blk_sum - sblk_sum)/((2 * ds + 1) * (2 * ds + 1))*h*h
+                    // n = k * (blk_sum - sblk_sum)*(blk_sum - sblk_sum)
+                    // distance = d * pow((blk_sum - sblk_sum), 2);
+                    // weight = pow(2.718, (-distance / (h * h)));
+
+                    weight = pow(2.718, k * (blk_sum - sblk_sum) * (blk_sum - sblk_sum));
 
                     if (weight > weight_max)
                     {
@@ -104,7 +113,7 @@ void isp_nlm(uint8_t *image, uint8_t Ds, uint8_t ds, uint8_t h)
             {
                 for (int n = -Ds + ds; n < Ds - ds; n++)
                 {
-                    value += weight_table[idx] * image_in[(i + m) * image_width + (j + n)];
+                    value += weight_table[idx] * src_image[(i + m) * image_width + (j + n)];
                     idx++;
                 }
             }
@@ -114,7 +123,7 @@ void isp_nlm(uint8_t *image, uint8_t Ds, uint8_t ds, uint8_t h)
                 value = 255;
             }
 
-            image[i * image_width + j] = (uint8_t)value;
+            dst_image[i * image_width + j] = (uint8_t)value;
         }
     }
 
