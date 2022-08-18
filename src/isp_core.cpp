@@ -109,7 +109,7 @@ void isp_load_config(string filename, isp_config_t *isp_config)
     }
 
     
-#if 1
+#if 0
     //log config
     cout << "isp pipeline config:" << endl;
     cout << "image resolution = " << isp_config->image_width << "x" << isp_config->image_height << "," << isp_config->image_bits << " bits/pixels" << endl;
@@ -205,17 +205,26 @@ void isp_yuv_run(uint8_t *rgb_buf, uint8_t *yuv_buf)
 
     uint8_t* y_nlm_image = (uint8_t *)malloc(sizeof(uint8_t) * g_isp_config.image_height * g_isp_config.image_width);
     uint8_t* y_bnf_image = (uint8_t *)malloc(sizeof(uint8_t) * g_isp_config.image_height * g_isp_config.image_width);
+    uint8_t* y_eeh_image = (uint8_t *)malloc(sizeof(uint8_t) * g_isp_config.image_height * g_isp_config.image_width);
+    uint8_t* y_dege_map = (uint8_t *)malloc(sizeof(uint8_t) * g_isp_config.image_height * g_isp_config.image_width);
+
     isp_csc(rgb_buf, yuv_buf);
     isp_nlm(yuv_buf,y_nlm_image);
     isp_bnf(y_nlm_image,y_bnf_image);
+    isp_eeh(y_bnf_image,y_dege_map,y_eeh_image);
 
 
     Mat mat_image_1(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, y_nlm_image);
-    imwrite("nlm.png",mat_image_1);
     Mat mat_image_2(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, y_bnf_image);
+    Mat mat_image_3(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, y_eeh_image);
+    
+    imwrite("nlm.png",mat_image_1);
     imwrite("bnf.png",mat_image_2);
+    imwrite("eeh.png",mat_image_3);
 
     free(y_nlm_image);
     free(y_bnf_image);
+    free(y_eeh_image);
+    free(y_dege_map);
 
 }
