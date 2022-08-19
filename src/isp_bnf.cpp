@@ -62,11 +62,4 @@ void isp_bnf(uint8_t *src_image, uint8_t *dst_image)
     }
 }
 
-    // if rdiff[i,j] >= self.rthres[0]:
-    //     rdiff[i,j] = self.rw[0]
-    // elif rdiff[i,j] < self.rthres[0] and rdiff[i,j] >= self.rthres[1]:
-    //     rdiff[i,j] = self.rw[1]
-    // elif rdiff[i,j] < self.rthres[1] and rdiff[i,j] >= self.rthres[2]:
-    //     rdiff[i,j] = self.rw[2]
-    // elif rdiff[i,j] < self.rthres[2]:
-    //     rdiff[i,j] = self.rw[3]
+  

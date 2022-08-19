@@ -3,7 +3,6 @@
 #include <vector>
 #include "opencv2/opencv.hpp"
 
-
 using namespace cv;
 using json = nlohmann::json;
 extern isp_config_t g_isp_config;
@@ -43,8 +42,15 @@ void isp_load_config(string filename, isp_config_t *isp_config)
     isp_config->eeh_config.gain_max = jfile["eeh"]["gain_max"];
     isp_config->eeh_config.thres_min = jfile["eeh"]["thres_min"];
     isp_config->eeh_config.thres_max = jfile["eeh"]["thres_max"];
-    isp_config->eeh_config.em_clip_min= jfile["eeh"]["em_clip_min"];
+    isp_config->eeh_config.em_clip_min = jfile["eeh"]["em_clip_min"];
     isp_config->eeh_config.em_clip_max = jfile["eeh"]["em_clip_max"];
+    isp_config->fcs_config.edge_min = jfile["fcs"]["edge_min"];
+    isp_config->fcs_config.edge_max = jfile["fcs"]["edge_max"];
+
+    isp_config->hsc_config.hue_offset = jfile["hsc"]["hue_offset"];
+    isp_config->hsc_config.saturation_gain = jfile["hsc"]["saturation_gain"];
+    isp_config->bcc_config.brightness = jfile["bcc"]["brightness"];
+    isp_config->bcc_config.contrast = jfile["bcc"]["contrast"];
 
 
     std::vector<std::vector<float>> m;
@@ -73,7 +79,6 @@ void isp_load_config(string filename, isp_config_t *isp_config)
         }
     }
 
-    
     std::vector<std::vector<uint16_t>> w0;
     w0 = jfile["bnf"]["dw"].get<std::vector<std::vector<uint16_t>>>();
     count = 0;
@@ -87,7 +92,6 @@ void isp_load_config(string filename, isp_config_t *isp_config)
         }
     }
 
-    
     std::vector<uint16_t> w1;
     w1 = jfile["bnf"]["rw"].get<std::vector<uint16_t>>();
     count = 0;
@@ -108,8 +112,7 @@ void isp_load_config(string filename, isp_config_t *isp_config)
         count++;
     }
 
-    
-#if 0
+#if 1
     //log config
     cout << "isp pipeline config:" << endl;
     cout << "image resolution = " << isp_config->image_width << "x" << isp_config->image_height << "," << isp_config->image_bits << " bits/pixels" << endl;
@@ -132,19 +135,28 @@ void isp_load_config(string filename, isp_config_t *isp_config)
     cout << isp_config->bnf_config.dw[15] << "," << isp_config->bnf_config.dw[16] << "," << isp_config->bnf_config.dw[17] << "," << isp_config->bnf_config.dw[18] << "," << isp_config->bnf_config.dw[19] << endl;
     cout << isp_config->bnf_config.dw[20] << "," << isp_config->bnf_config.dw[21] << "," << isp_config->bnf_config.dw[22] << "," << isp_config->bnf_config.dw[23] << "," << isp_config->bnf_config.dw[24] << endl;
     cout << "bnf rw:" << endl;
-    cout << isp_config->bnf_config.rw[0] << "," << isp_config->bnf_config.rw[1] << "," << isp_config->bnf_config.rw[2] << "," << isp_config->bnf_config.rw[3]<< endl;
+    cout << isp_config->bnf_config.rw[0] << "," << isp_config->bnf_config.rw[1] << "," << isp_config->bnf_config.rw[2] << "," << isp_config->bnf_config.rw[3] << endl;
     cout << "bnf rthres:" << endl;
-    cout << isp_config->bnf_config.rthres[0] << "," << isp_config->bnf_config.rthres[1] << "," << isp_config->bnf_config.rthres[2]<< endl;
+    cout << isp_config->bnf_config.rthres[0] << "," << isp_config->bnf_config.rthres[1] << "," << isp_config->bnf_config.rthres[2] << endl;
     cout << "edge_filter:" << endl;
     cout << isp_config->edge_filter[0] << "," << isp_config->edge_filter[1] << "," << isp_config->edge_filter[2] << "," << isp_config->edge_filter[3] << "," << isp_config->edge_filter[4] << endl;
     cout << isp_config->edge_filter[5] << "," << isp_config->edge_filter[6] << "," << isp_config->edge_filter[7] << "," << isp_config->edge_filter[8] << "," << isp_config->edge_filter[9] << endl;
     cout << isp_config->edge_filter[10] << "," << isp_config->edge_filter[11] << "," << isp_config->edge_filter[12] << "," << isp_config->edge_filter[13] << "," << isp_config->edge_filter[14] << endl;
-    cout << "eeh gain_min = "<<isp_config->eeh_config.gain_min<<endl;
-    cout << "eeh gain_max = "<<isp_config->eeh_config.gain_max<<endl;
-    cout << "eeh thres_min = "<<isp_config->eeh_config.thres_min<<endl;
-    cout << "eeh thres_max = "<<isp_config->eeh_config.thres_max<<endl;
-    cout << "eeh em_clip_min = "<<isp_config->eeh_config.em_clip_min<<endl;
-    cout << "eeh em_clip_max = "<<isp_config->eeh_config.em_clip_max<<endl;
+    cout << "eeh gain_min = " << isp_config->eeh_config.gain_min << endl;
+    cout << "eeh gain_max = " << isp_config->eeh_config.gain_max << endl;
+    cout << "eeh thres_min = " << isp_config->eeh_config.thres_min << endl;
+    cout << "eeh thres_max = " << isp_config->eeh_config.thres_max << endl;
+    cout << "eeh em_clip_min = " << isp_config->eeh_config.em_clip_min << endl;
+    cout << "eeh em_clip_max = " << isp_config->eeh_config.em_clip_max << endl;
+    cout << "fcs:" << endl;
+    cout << "fcs edge min = " << +isp_config->fcs_config.edge_min << endl;
+    cout << "fcs edge max = " << +isp_config->fcs_config.edge_max << endl;
+    cout << "hsc:"<< endl;
+    cout << "hsc hue_offset = " << +isp_config->hsc_config.hue_offset <<endl;
+    cout << "hsc saturation_gain = " << isp_config->hsc_config.saturation_gain <<endl;
+    cout << "bcc:" <<endl;
+    cout << "bcc brightness = " << +isp_config->bcc_config.brightness <<endl;
+    cout << "bcc contrast = " << +isp_config->bcc_config.contrast <<endl;
 
 #endif
 }
@@ -202,29 +214,53 @@ void isp_raw_run(uint16_t *raw_buf, uint8_t *rgb_buf)
 
 void isp_yuv_run(uint8_t *rgb_buf, uint8_t *yuv_buf)
 {
-
-    uint8_t* y_nlm_image = (uint8_t *)malloc(sizeof(uint8_t) * g_isp_config.image_height * g_isp_config.image_width);
-    uint8_t* y_bnf_image = (uint8_t *)malloc(sizeof(uint8_t) * g_isp_config.image_height * g_isp_config.image_width);
-    uint8_t* y_eeh_image = (uint8_t *)malloc(sizeof(uint8_t) * g_isp_config.image_height * g_isp_config.image_width);
-    uint8_t* y_dege_map = (uint8_t *)malloc(sizeof(uint8_t) * g_isp_config.image_height * g_isp_config.image_width);
-
-    isp_csc(rgb_buf, yuv_buf);
-    isp_nlm(yuv_buf,y_nlm_image);
-    isp_bnf(y_nlm_image,y_bnf_image);
-    isp_eeh(y_bnf_image,y_dege_map,y_eeh_image);
-
-
-    Mat mat_image_1(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, y_nlm_image);
-    Mat mat_image_2(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, y_bnf_image);
-    Mat mat_image_3(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, y_eeh_image);
+    uint32_t image_size = g_isp_config.image_height * g_isp_config.image_width;
     
-    imwrite("nlm.png",mat_image_1);
-    imwrite("bnf.png",mat_image_2);
-    imwrite("eeh.png",mat_image_3);
+    uint8_t *y_nlm_image = (uint8_t *)malloc(sizeof(uint8_t) * image_size);
+    uint8_t *y_bnf_image = (uint8_t *)malloc(sizeof(uint8_t) * image_size);
+    uint8_t *y_eeh_image = (uint8_t *)malloc(sizeof(uint8_t) * image_size);
+    int8_t *ege_map = (int8_t *)malloc(sizeof(int8_t) * image_size);
+
+    
+
+    //rgb ro yuv
+    isp_csc(rgb_buf, yuv_buf);
+    
+    ///////////////////////////////////////////////////
+    /* Y channel processing */
+    ///////////////////////////////////////////////////
+    
+    //non local mean denoise
+    isp_nlm(yuv_buf, y_nlm_image);
+    Mat mat_image_1(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, y_nlm_image);
+    imwrite("nlm.png", mat_image_1);
+
+    // bilateral filter denoise
+    isp_bnf(y_nlm_image, yuv_buf);
+    Mat mat_image_2(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, yuv_buf);
+    imwrite("bnf.png", mat_image_2);
+
+    // edge enhancement
+    isp_eeh(yuv_buf, ege_map);
+    Mat mat_image_3(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, yuv_buf);
+    imwrite("eeh.png", mat_image_3);
+    
+    //brightness contrast control
+    isp_bcc(yuv_buf);
+    Mat mat_image_4(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, yuv_buf);
+    imwrite("bcc.png", mat_image_4);
+
+
+    ///////////////////////////////////////////////////
+    /* color channel processing */
+    ///////////////////////////////////////////////////
+
+    isp_fcs(yuv_buf + image_size, ege_map);
+    isp_hsc(yuv_buf + image_size);
+    
 
     free(y_nlm_image);
     free(y_bnf_image);
     free(y_eeh_image);
-    free(y_dege_map);
-
+    free(ege_map);
 }

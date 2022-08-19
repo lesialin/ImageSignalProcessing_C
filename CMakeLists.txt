@@ -24,5 +24,8 @@ src/isp_csc.cpp
 src/isp_nlm.cpp
 src/isp_bnf.cpp
 src/isp_eeh.cpp
+src/isp_fcs.cpp
+src/isp_hsc.cpp
+src/isp_bcc.cpp
 main.cpp)
 target_link_libraries(isp_pipeline ${OpenCV_LIBS})

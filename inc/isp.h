@@ -70,6 +70,27 @@ typedef struct
 
 } eeh_cfg_t;
 
+typedef struct{
+    uint8_t edge_min;
+    uint8_t edge_max;
+
+} fcs_cfg_t;
+
+typedef struct{
+
+    uint8_t hue_offset;
+    float saturation_gain;
+
+} hsc_cfg_t;
+
+
+typedef struct{
+
+    uint8_t brightness;
+    float contrast;
+
+} bcc_cfg_t;
+
 typedef struct
 {
     // image resolution
@@ -99,13 +120,22 @@ typedef struct
     int16_t edge_filter[15];
     //edge enhancement
     eeh_cfg_t eeh_config;
+    //false color suppression
+    fcs_cfg_t fcs_config;
+    //hue staturation control
+    hsc_cfg_t hsc_config;
+    //brightness contrast control
+    bcc_cfg_t bcc_config;
 
 } isp_config_t;
+
+
 
 EXPORT void isp_init();
 EXPORT void isp_raw_run(uint16_t *raw_buf, uint8_t *rgb_buf);
 EXPORT void isp_yuv_run(uint8_t *rgb_buf, uint8_t *yuv_buf);
 EXPORT void isp_load_config(string filename, isp_config_t *isp_config);
+//raw domain
 void isp_blc(uint16_t *raw_buf);
 void isp_dpc(uint16_t *raw_buf);
 void isp_aaf(uint16_t *raw_buf);
@@ -113,7 +143,16 @@ void isp_awb_gain(uint16_t *raw_buf);
 void isp_ccm(uint16_t *rgb_buf);
 void isp_cfa(uint16_t *raw_buf, uint16_t *rgb_buf);
 void isp_gac(uint16_t *rgb_buf, uint8_t *gamma_table, uint16_t table_size, uint8_t *ga_rgb_buf);
+
+//color space conversion
 void isp_csc(uint8_t *rgb_buf, uint8_t *yuv_buf);
-void isp_nlm(uint8_t *src_image, uint8_t *dst_image);
-void isp_bnf(uint8_t *src_image, uint8_t *dst_image);
-void isp_eeh(uint8_t *src_image,uint8_t *edge_map ,uint8_t *edge_image);
+
+//yuv domain
+void isp_nlm(uint8_t *src_y_image,uint8_t *dst_y_image);
+void isp_bnf(uint8_t *src_y_image, uint8_t *dst_y_image);
+void isp_eeh(uint8_t *y_image, int8_t *edge_map);
+void isp_bcc(uint8_t* y_image);
+void isp_fcs(uint8_t *cbcr_image,int8_t *edge_map);
+void isp_hsc(uint8_t *cbcr_image);
+
+

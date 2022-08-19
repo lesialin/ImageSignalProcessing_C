@@ -29,7 +29,7 @@ void integrate_gray(uint8_t *image, uint16_t image_width, uint16_t image_height,
     }
 }
 
-void isp_nlm(uint8_t *src_image,uint8_t* dst_image)
+void isp_nlm(uint8_t *src_y_image,uint8_t *dst_y_image)
 {
 
     uint16_t image_height, image_width;
@@ -52,13 +52,14 @@ void isp_nlm(uint8_t *src_image,uint8_t* dst_image)
     table_size = 2 * (Ds - ds) + 1;
 
     //d = 1.0 / ((2 * ds + 1) * (2 * ds + 1));
+    //TOOD: convert to fixed-point
     k = -1.0 / ((2 * ds + 1) * (2 * ds + 1) * h * h);
 
     integ_image = (uint32_t *)malloc(image_width * image_height * sizeof(uint32_t));
 
     weight_table = (float *)malloc(table_size * table_size * sizeof(float));
 
-    integrate_gray(src_image, image_width, image_height, integ_image);
+    integrate_gray(src_y_image, image_width, image_height, integ_image);
 
     for (int i = Ds; i < image_height - Ds; i++)
     {
@@ -93,6 +94,7 @@ void isp_nlm(uint8_t *src_image,uint8_t* dst_image)
                     // distance = d * pow((blk_sum - sblk_sum), 2);
                     // weight = pow(2.718, (-distance / (h * h)));
 
+                    //TODO: use taylor series to improve 
                     weight = pow(2.718, k * (blk_sum - sblk_sum) * (blk_sum - sblk_sum));
 
                     if (weight > weight_max)
@@ -113,7 +115,7 @@ void isp_nlm(uint8_t *src_image,uint8_t* dst_image)
             {
                 for (int n = -Ds + ds; n < Ds - ds; n++)
                 {
-                    value += weight_table[idx] * src_image[(i + m) * image_width + (j + n)];
+                    value += weight_table[idx] * src_y_image[(i + m) * image_width + (j + n)];
                     idx++;
                 }
             }
@@ -123,7 +125,7 @@ void isp_nlm(uint8_t *src_image,uint8_t* dst_image)
                 value = 255;
             }
 
-            dst_image[i * image_width + j] = (uint8_t)value;
+            dst_y_image[i * image_width + j] = (uint8_t)value;
         }
     }
 

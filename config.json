@@ -72,10 +72,22 @@
     "eeh":{
         "gain_min":32,
         "gain_max":128,
-        "thres_min":32,
-        "thres_max":64,
+        "thres_min":4,
+        "thres_max":16,
         "em_clip_min":-64,
         "em_clip_max":64
+    },
+    "fcs":{
+        "edge_min":32,
+        "edge_max":64
+    },
+    "hsc":{
+        "hue_offset":0,
+        "saturation_gain":1.3 
+    },
+    "bcc":{
+        "brightness":0,
+        "contrast":1.1
     }
 
 
