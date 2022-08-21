@@ -1,7 +1,7 @@
 #include "isp.h"
 extern isp_config_t g_isp_config;
 
-
+//anti-aliasing filter
 void isp_aaf(uint16_t *raw_buf)
 {
     uint16_t image_height = g_isp_config.image_height;

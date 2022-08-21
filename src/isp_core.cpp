@@ -112,7 +112,7 @@ void isp_load_config(string filename, isp_config_t *isp_config)
         count++;
     }
 
-#if 1
+#if 0
     //log config
     cout << "isp pipeline config:" << endl;
     cout << "image resolution = " << isp_config->image_width << "x" << isp_config->image_height << "," << isp_config->image_bits << " bits/pixels" << endl;
@@ -217,11 +217,8 @@ void isp_yuv_run(uint8_t *rgb_buf, uint8_t *yuv_buf)
     uint32_t image_size = g_isp_config.image_height * g_isp_config.image_width;
     
     uint8_t *y_nlm_image = (uint8_t *)malloc(sizeof(uint8_t) * image_size);
-    uint8_t *y_bnf_image = (uint8_t *)malloc(sizeof(uint8_t) * image_size);
-    uint8_t *y_eeh_image = (uint8_t *)malloc(sizeof(uint8_t) * image_size);
     int8_t *ege_map = (int8_t *)malloc(sizeof(int8_t) * image_size);
 
-    
 
     //rgb ro yuv
     isp_csc(rgb_buf, yuv_buf);
@@ -232,35 +229,35 @@ void isp_yuv_run(uint8_t *rgb_buf, uint8_t *yuv_buf)
     
     //non local mean denoise
     isp_nlm(yuv_buf, y_nlm_image);
-    Mat mat_image_1(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, y_nlm_image);
-    imwrite("nlm.png", mat_image_1);
+    // Mat mat_image_1(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, y_nlm_image);
+    // imwrite("nlm.png", mat_image_1);
 
     // bilateral filter denoise
     isp_bnf(y_nlm_image, yuv_buf);
-    Mat mat_image_2(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, yuv_buf);
-    imwrite("bnf.png", mat_image_2);
+    // Mat mat_image_2(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, yuv_buf);
+    // imwrite("bnf.png", mat_image_2);
 
     // edge enhancement
     isp_eeh(yuv_buf, ege_map);
-    Mat mat_image_3(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, yuv_buf);
-    imwrite("eeh.png", mat_image_3);
+    // Mat mat_image_3(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, yuv_buf);
+    // imwrite("eeh.png", mat_image_3);
     
     //brightness contrast control
     isp_bcc(yuv_buf);
-    Mat mat_image_4(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, yuv_buf);
-    imwrite("bcc.png", mat_image_4);
+    // Mat mat_image_4(g_isp_config.image_height, g_isp_config.image_width, CV_8UC1, yuv_buf);
+    // imwrite("bcc.png", mat_image_4);
 
 
     ///////////////////////////////////////////////////
     /* color channel processing */
     ///////////////////////////////////////////////////
 
+    //false color suppression
     isp_fcs(yuv_buf + image_size, ege_map);
+    //hue saturation control
     isp_hsc(yuv_buf + image_size);
     
 
     free(y_nlm_image);
-    free(y_bnf_image);
-    free(y_eeh_image);
     free(ege_map);
 }
