@@ -125,9 +125,9 @@ The configuration can be a adjusted as input raw image.
     ],
     "gamma": 0.8,
     "csc": [
-        [0.257,0.504,0.098,16],
-        [-0.148,-0.291,0.439,128],
-        [0.439,-0.368,-0.071,128]
+        [0.2568,0.5041,0.0979,16],
+        [-0.1482,-0.291,0.4392,128],
+        [0.4392,-0.3678,-0.0714,128]
     ],
     "nlm":{
         "Ds":4,
@@ -170,6 +170,7 @@ The configuration can be a adjusted as input raw image.
         "brightness":0,
         "contrast":1.1
     }
+
 
 }
 
