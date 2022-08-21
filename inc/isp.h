@@ -112,6 +112,8 @@ typedef struct
     string cfa_mode;
     // gamma correction parameter
     float gamma;
+    // color space coversion
+    float csc_matrix[12];
     //non local mean denoise
     nlm_cfg_t nlm_config;
     //bilateral noise filter

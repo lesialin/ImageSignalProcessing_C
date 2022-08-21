@@ -64,6 +64,20 @@ void isp_load_config(string filename, isp_config_t *isp_config)
             isp_config->ccm_matrix[count] = (float)j;
             count++;
         }
+    
+    }
+
+    std::vector<std::vector<float>> c;
+    c = jfile["csc"].get<std::vector<std::vector<float>>>();
+    count = 0;
+    for (auto i : c)
+    {
+        for (auto j : i)
+        {
+
+            isp_config->csc_matrix[count] = (float)j;
+            count++;
+        }
     }
 
     std::vector<std::vector<int16_t>> e;
