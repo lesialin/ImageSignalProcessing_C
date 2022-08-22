@@ -1,8 +1,8 @@
 # ISP Image Signal Processor in C
 
-This repo is implementation of ISP in c function, basically it is  re-implemented from [openISP](https://github.com/cruxopen/openISP) in python.  It currently in very first version, I list some [TODO ](#TODO)list to make pipeline more robust.
+This repo is an implementation of ISP in c function, basically it is re-implemented from [openISP](https://github.com/cruxopen/openISP) in python.  It's currently in very first version, I list some [TODO ](#TODO)list to make pipeline more robust.
 
-And you find  something wrong in my implementation, welcome to let me know.
+And if you find  something wrong in my implementation, welcome to let me know.
 
 
 ![](image/isp_pipeline.png)
