@@ -2,10 +2,7 @@
 
 This repo is implementation of ISP in c function, basically it is  re-implemented from [openISP](https://github.com/cruxopen/openISP) in python.  It currently in very first version, I list some [TODO ](#TODO)list to make pipeline more robust.
 
-And you find  something wrong in my implementation, welcome to let [me](lin.lesia@gmail.com) know.
-
-I also need more raw data  with calibration parameters, if someone know where to get, please tell me, I will be soooo glad.
-
+And you find  something wrong in my implementation, welcome to let me know.
 
 
 ![](image/isp_pipeline.png)
